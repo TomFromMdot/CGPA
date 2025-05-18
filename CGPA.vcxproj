@@ -130,6 +130,11 @@
   <ItemGroup>
     <ClCompile Include="CGPA.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GradesData.hpp" />
+    <ClInclude Include="Structs.hpp" />
+    <ClInclude Include="User.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

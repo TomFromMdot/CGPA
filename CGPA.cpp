@@ -15,7 +15,10 @@ struct Grade
 {
     std::string gradeSing;
     float points;
-    Grade(const std::string sign, float pt) : gradeSing(sign), points(pt){}
+    Grade(const std::string sign, float pt) : gradeSing(sign), points(pt)
+    {
+        std::cout << "Create grade with sign: " << sign << " and points: " << pt << "\n";
+    }
 };
 
 struct GradeData
@@ -36,7 +39,7 @@ class Subject
             std::cout << "Signature of this grade not exist in data..\n";
             return;
         }
-
+        grade_.gradeSing = points->first;
         grade_.points = points->second.points;
 
     }
@@ -48,15 +51,17 @@ public:
 
         //Later i need to think about exceptions with one arg (gradeData) if will be nullptr
         createPoints();
+        std::cout << "Create new subject with name: " << name_ << "\n Grade: " << grade_.gradeSing << "\n Points: " << grade_.points << "\n";
 
     }
 
-    float getPoints()
+    float getPoints() const
     {
+        std::cout << "Get points" << (float)grade_.points;
         return grade_.points;
     }
 
-    void printSubject()
+    void printSubject() const
     {
         std::cout
             << "--------------------------------\n\n"
@@ -69,7 +74,7 @@ public:
 
 class User
 {
-    std::vector<Subject*> subjectList;
+    std::vector<std::unique_ptr<Subject>> subjectList;
     std::string username_;
 public:
     User(const std::string& username) : username_(username)
@@ -81,22 +86,25 @@ public:
     {
         username_ = username;
     }
-    const std::vector<Subject*>& getSubjectList()
+    const std::vector<std::unique_ptr<Subject>> getSubjectList()
     {
         return subjectList;
     }
-    void addSubject(Subject* sub)
+    void addSubject(std::unique_ptr<Subject> sub)
     {
-        subjectList.push_back(sub);
+        std::cout << "Add subject\n";
+        subjectList.push_back(std::move(sub));
     }
 
     float getPointsSum()
     {
         float result = 0;
-        for (auto& sb : subjectList)
+        std::cout << "Subject number: " << subjectList.size() << "\n";
+        for (int i = 0; i < subjectList.size(); i++)
         {
-            result += sb->getPoints();
+            result += subjectList[i]->getPoints();
         }
+        return result;
     }
 };
 
@@ -167,7 +175,10 @@ public:
 /*
 * @bref CGPA is facade patter for clear code.
 * 
-* CPGA can only show data by print to console
+* 
+* 
+* CPGA can only show data by print to console but can modyfi real data
+* 
 * 
 */
 class CGPA
@@ -176,18 +187,19 @@ class CGPA
     GradeData gradeData_;
 
 
-    void findUser(const std::string& username)
+    User* findUser(const std::string& username)
     {
         auto usr = usersData_.getUser(username);
         if (!usr.has_value())
         {
             std::cout << "Can't find user with this name: " << username << "\n";
-            return;
+            return nullptr;
         }
         if (auto sp = usr->lock())
         {
-            std::cout << sp->getName() << " has ";
+            return sp.get();
         }
+        return nullptr;
     }
 public:
     /*
@@ -223,8 +235,8 @@ public:
                 return;
             }
             Grade x = gr->second;
-            Subject tmp(username, x, &gradeData_.gradeWithValue);
-            sp->addSubject(&tmp);
+            auto subj = std::make_unique<Subject>(subjectName, gr->second, &gradeData_.gradeWithValue);
+            sp->addSubject(std::move(subj));
 
         }
 
@@ -236,9 +248,14 @@ public:
     }
     void getUserInformationAll(const std::string& username)
     {
+        auto usr = findUser(username);
+        std::cout << usr->getPointsSum();
+
+    }
+    void getUserInformationPoints(const std::string& username)
+    {
         
     }
-    float getUserInformationPoints(const std::string& username){}
     std::vector<std::string> getUserInfromationGradeList(const std::string& username){}
 
 };
@@ -254,6 +271,7 @@ int main()
     cpga.addGradeWithValue("A-", 9.0);
     cpga.createNewUser("Tomek");
     cpga.addSubjectWithGradeToUser("Tomek", "Matematyka", "A+");
+    cpga.getUserInformationAll("Tomek");
 
     return 0;
 }
