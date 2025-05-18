@@ -6,28 +6,65 @@
 #include <vector>
 #include <optional>
 
-enum class GradeType 
-{
-    MINUS,
-    NORMAL,
-    PLUS
-};
+
+
+
+
 
 struct Grade
 {
-    char gradeSignature_;
-    GradeType type;
+    std::string gradeSing;
+    float points;
+    Grade(const std::string sign, float pt) : gradeSing(sign), points(pt){}
+};
 
+struct GradeData
+{
+    std::map<std::string, Grade> gradeWithValue;
 };
 
 class Subject
 {
+    std::map<std::string, Grade>* data_;
     std::string name_;
-    std::map<std::string, Grade*>* gradesList_;
+    Grade grade_;
+    void createPoints() 
+    {
+        auto points = data_->find(grade_.gradeSing);
+        if (points == data_->end())
+        {
+            std::cout << "Signature of this grade not exist in data..\n";
+            return;
+        }
 
+        grade_.points = points->second.points;
+
+    }
 
 public:
-    Subject(std::map<std::string, Grade*>& gList) : gradesList_(&gList){  }
+    ~Subject() {}
+    Subject(std::string name, Grade grade, std::map<std::string, Grade>* gradeData) : name_(name), grade_(grade), data_(gradeData)
+    {
+
+        //Later i need to think about exceptions with one arg (gradeData) if will be nullptr
+        createPoints();
+
+    }
+
+    float getPoints()
+    {
+        return grade_.points;
+    }
+
+    void printSubject()
+    {
+        std::cout
+            << "--------------------------------\n\n"
+            << "Subject name: " << name_ << "\n"
+            << "Grade: " << grade_.gradeSing << "\n"
+            << "Points: " << grade_.points << "\n";
+    }
+
 };
 
 class User
@@ -51,6 +88,15 @@ public:
     void addSubject(Subject* sub)
     {
         subjectList.push_back(sub);
+    }
+
+    float getPointsSum()
+    {
+        float result = 0;
+        for (auto& sb : subjectList)
+        {
+            result += sb->getPoints();
+        }
     }
 };
 
@@ -118,19 +164,80 @@ public:
 };
 
 
-
+/*
+* @bref CGPA is facade patter for clear code.
+* 
+* CPGA can only show data by print to console
+* 
+*/
 class CGPA
 {
     UsersData usersData_;
-    User*findUser(const std::string& username)
+    GradeData gradeData_;
+
+
+    void findUser(const std::string& username)
     {
-       
+        auto usr = usersData_.getUser(username);
+        if (!usr.has_value())
+        {
+            std::cout << "Can't find user with this name: " << username << "\n";
+            return;
+        }
+        if (auto sp = usr->lock())
+        {
+            std::cout << sp->getName() << " has ";
+        }
     }
 public:
-    void createNewUser(const std::string& username) {}
-    void addSubjectWithGradeToUser(const std::string& username, const std::string& subjectName, const std::string& grade) {}
-    void printUsersData(){}
-    void getUserInformationAll(const std::string& username){}
+    /*
+    * @bref Create new user by name
+    */
+    void addGradeWithValue(const std::string& grade, float points)
+    {
+        Grade grd(grade, points);
+
+        gradeData_.gradeWithValue.insert({grade, grd});
+    }
+    void createNewUser(const std::string& username) 
+    {
+        // Create temporary pointer
+        auto usr = std::make_unique<User>(username);
+        // Move to storage
+        usersData_.addUser(std::move(usr));
+    }
+    void addSubjectWithGradeToUser(const std::string& username, const std::string& subjectName, const std::string& grade) 
+    {
+        auto usr = usersData_.getUser(username);
+        if (!usr.has_value())
+        {
+            std::cout << "Can't find user with name: " << username << "\n";
+            return;
+        }
+        if(auto sp = usr->lock())
+        {
+            auto gr = gradeData_.gradeWithValue.find(grade);
+            if (gr == gradeData_.gradeWithValue.end())
+            {
+                std::cout << "Sorry but can't find this sing in data of grades lists..\n";
+                return;
+            }
+            Grade x = gr->second;
+            Subject tmp(username, x, &gradeData_.gradeWithValue);
+            sp->addSubject(&tmp);
+
+        }
+
+
+    }
+    void printUsersData()
+    {
+        usersData_.printUsers();
+    }
+    void getUserInformationAll(const std::string& username)
+    {
+        
+    }
     float getUserInformationPoints(const std::string& username){}
     std::vector<std::string> getUserInfromationGradeList(const std::string& username){}
 
@@ -140,18 +247,13 @@ public:
 
 int main()
 {
+    CGPA cpga;
 
+    cpga.addGradeWithValue("A+", 10.0);
+    cpga.addGradeWithValue("A", 9.5);
+    cpga.addGradeWithValue("A-", 9.0);
+    cpga.createNewUser("Tomek");
+    cpga.addSubjectWithGradeToUser("Tomek", "Matematyka", "A+");
 
-    UsersData uData;
-    
-    std::unique_ptr<User> usr = std::make_unique<User>("Tomek");
-
-    uData.addUser(std::move(usr));
-
-
-    uData.printUsers();
-
-    uData.removeUserFromListByName("Tomek");
-
-    uData.printUsers();
+    return 0;
 }
