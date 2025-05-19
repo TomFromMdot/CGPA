@@ -264,9 +264,25 @@ public:
  
 */
 
+void createGrades(CPGA& cpga)
+{
+    cpga.createGradeWithPoints('A', 10.0);
+    cpga.createGradeWithPoints('B', 8.0);
+    cpga.createGradeWithPoints('C', 6.0);
+    cpga.createGradeWithPoints('D', 4.0);
+    cpga.createGradeWithPoints('E', 2.0);
+    cpga.createGradeWithPoints('F', 1.0);
+}
 int main()
 {
     CPGA cpga;
-    cpga.createGradeWithPoints('A', 10.0);
+    createGrades(cpga);
+    cpga.createNewUser("Tomek");
+    cpga.addGradeToUser("Tomek", 'A', GradeType::MINUS);
+    cpga.addGradeToUser("Tomek", 'B', GradeType::MINUS);
+    cpga.addGradeToUser("Tomek", 'C', GradeType::MINUS);
+    cpga.addGradeToUser("Tomek", 'D', GradeType::MINUS);
+    cpga.printAllUsers();
+    cpga.printUserData("Tomek");
     return 0;
 }

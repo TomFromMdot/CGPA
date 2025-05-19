@@ -26,7 +26,30 @@ public:
 
 
 	//Prints data
-	void printAllUsers() {}
-	void printUserData(const std::string& name) {}
+	void printAllUsers() 
+	{
+		const auto users = usersData_.getAllUsers();
+		if (users.size() == 0)
+		{
+			std::cout << "No users...\n";
+			return;
+		}
+
+
+		for (auto& user : users)
+		{
+			std::cout << "Name: " << user->getName() << "\n";
+			std::cout << "Grade points: " << user->getPointsSum() << "\n";
+		}
+	}
+	void printUserData(const std::string& name) 
+	{
+		auto user = usersData_.getUserByName(name);
+		if (user.has_value()) 
+		{
+			std::cout << "Name: " << user.value()->getName();
+			std::cout << "Name: " << user.value()->getPointsSum();
+		}
+	}
 	void printGradesList(){}
 };

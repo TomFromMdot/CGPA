@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+
 enum class GradeType
 {
 	PLUS,
@@ -19,7 +20,10 @@ struct Grade
 	{
 		auto s = data.find(sing);
 		if (s == data.end())
+		{
+			std::cout << "Cant't find data...\n";
 			return;
+		}
 
 		float sum = s->second;
 		switch (type)
@@ -28,6 +32,7 @@ struct Grade
 		case GradeType::NORMAL: { break; }
 		case GradeType::MINUS: { sum -= 0.5; break; }
 		}
-
+		points = sum;
+		std::cout << "Create points: " << points << "\n";
 	}
 };

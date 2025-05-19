@@ -25,16 +25,20 @@ public:
 
 	void addGradeWithPoint(char gradeChar, GradeType type, std::map<char, float> data)
 	{
-		Grade gr;
-		gr.sing = gradeChar;
-		gr.type = type;
-		gr.createPoints(data);
+		Grade* gr = new Grade;
+		gr->sing = gradeChar;
+		gr->type = type;
+		gr->createPoints(data);
+		gradeLists_.push_back(gr);
 	}
 
 	float getPointsSum()
 	{
 		if (gradeLists_.size() == 0)
+		{
+			std::cout << "No grades..\n";
 			return 0;
+		}
 		float result = 0;
 		for (auto& pt : gradeLists_)
 		{
