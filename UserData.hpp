@@ -51,5 +51,18 @@ public:
 		std::cout << "Can't find user: " << username << "\n";
 		return std::nullopt;
 	}
-
+	 
+	void addGradeToUser(const std::string& username, char sign,GradeType type, std::map<char,float> data)
+	{
+		for (auto* user : users_)
+		{
+			if (user->getName() == username)
+			{
+				user->addGradeWithPoint(sign, type, data);
+				return;
+			}
+		}
+		std::cout << "Can't find user: " << username << "\n";
+		return;
+	}
 };

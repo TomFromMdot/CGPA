@@ -6,7 +6,9 @@
 #include <vector>
 #include <optional>
 
+#include "CPGA.hpp"
 
+/*
 
 
 
@@ -143,7 +145,7 @@ public:
     * @params std::string username
     * 
     * @return If find user then return week_ptr User else return nullopt.
-    */
+    
     std::optional<std::weak_ptr<User>> getUser(const std::string& username)
     {
         for (auto& user : usersList)
@@ -180,8 +182,8 @@ public:
 * CPGA can only show data by print to console but can modyfi real data
 * 
 * 
-*/
-class CGPA
+
+class CGPAOld
 {
     UsersData usersData_;
     GradeData gradeData_;
@@ -204,7 +206,7 @@ class CGPA
 public:
     /*
     * @bref Create new user by name
-    */
+    
     void addGradeWithValue(const std::string& grade, float points)
     {
         Grade grd(grade, points);
@@ -259,19 +261,12 @@ public:
     std::vector<std::string> getUserInfromationGradeList(const std::string& username){}
 
 };
-
-
+ 
+*/
 
 int main()
 {
-    CGPA cpga;
-
-    cpga.addGradeWithValue("A+", 10.0);
-    cpga.addGradeWithValue("A", 9.5);
-    cpga.addGradeWithValue("A-", 9.0);
-    cpga.createNewUser("Tomek");
-    cpga.addSubjectWithGradeToUser("Tomek", "Matematyka", "A+");
-    cpga.getUserInformationAll("Tomek");
-
+    CPGA cpga;
+    cpga.createGradeWithPoints('A', 10.0);
     return 0;
 }

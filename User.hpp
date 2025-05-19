@@ -23,6 +23,14 @@ public:
 		return gradeLists_;
 	}
 
+	void addGradeWithPoint(char gradeChar, GradeType type, std::map<char, float> data)
+	{
+		Grade gr;
+		gr.sing = gradeChar;
+		gr.type = type;
+		gr.createPoints(data);
+	}
+
 	float getPointsSum()
 	{
 		if (gradeLists_.size() == 0)
