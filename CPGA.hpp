@@ -15,9 +15,9 @@ public:
 	{
 		usersData_.removeUser(username);
 	}
-	void addGradeToUser(const std::string& username, char sign, GradeType type)
+	void addGradeToUser(const std::string& username, const std::string& subjectName, char sign, GradeType type)
 	{
-		usersData_.addGradeToUser(username, sign, type, gradeData_.getGradesData());
+		usersData_.addGradeToUser(username,subjectName, sign, type, gradeData_.getGradesData());
 	}
 	void createGradeWithPoints(char sign, float point)
 	{

@@ -272,16 +272,39 @@ void createGrades(CPGA& cpga)
     cpga.createGradeWithPoints('D', 4.0);
     cpga.createGradeWithPoints('E', 2.0);
     cpga.createGradeWithPoints('F', 1.0);
+
 }
+void createTestUser(const std::string& username, CPGA cpga)
+{
+    cpga.createNewUser(username);
+}
+
+void addToTestUserGrades()
+{
+
+}
+
+
 int main()
 {
     CPGA cpga;
     createGrades(cpga);
     cpga.createNewUser("Tomek");
-    cpga.addGradeToUser("Tomek", 'A', GradeType::MINUS);
-    cpga.addGradeToUser("Tomek", 'B', GradeType::MINUS);
-    cpga.addGradeToUser("Tomek", 'C', GradeType::MINUS);
-    cpga.addGradeToUser("Tomek", 'D', GradeType::MINUS);
+    cpga.createNewUser("Bartek");
+    cpga.createNewUser("Romek");
+    cpga.createNewUser("Andrzej");
+
+
+
+    cpga.addGradeToUser("Tomek","Matematyka", 'A', GradeType::MINUS);
+    cpga.addGradeToUser("Tomek","Biologia", 'B', GradeType::MINUS);
+    cpga.addGradeToUser("Tomek","Chemia", 'C', GradeType::MINUS);
+    cpga.addGradeToUser("Tomek","WF", 'D', GradeType::MINUS);
+
+    cpga.addGradeToUser("Bartek", "Matematyka", 'B', GradeType::MINUS);
+    cpga.addGradeToUser("Bartek", "WF", 'C', GradeType::NORMAL);
+    cpga.addGradeToUser("Bartek", "Chemia", 'D', GradeType::PLUS);
+
     cpga.printAllUsers();
     cpga.printUserData("Tomek");
     return 0;

@@ -11,7 +11,10 @@ class User
 	std::string username_;
 public:
 	User(const std::string& username) : username_(username) {}
-
+	~User()
+	{
+		clearGrade();
+	}
 	void setName(const std::string& username) {}
 	const std::string getName()
 	{
@@ -23,9 +26,10 @@ public:
 		return gradeLists_;
 	}
 
-	void addGradeWithPoint(char gradeChar, GradeType type, std::map<char, float> data)
+	void addGradeWithPoint(const std::string& subjectName, char gradeChar, GradeType type, std::map<char, float> data)
 	{
 		Grade* gr = new Grade;
+		gr->subject = subjectName;
 		gr->sing = gradeChar;
 		gr->type = type;
 		gr->createPoints(data);
@@ -47,6 +51,20 @@ public:
 		return result;
 	}
 
+private:
 
+	void clearGrade()
+	{
+		if (gradeLists_.size() == 0)
+			return;
+		std::cout << "Clearing grade lists..\n";
+		for (auto gr : gradeLists_)
+		{
+			delete gr;
+		}
+
+		gradeLists_.clear();
+
+	}
 
 };

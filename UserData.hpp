@@ -3,12 +3,16 @@
 #include <iostream>
 #include <optional>
 #include "User.hpp"
-class UserData 
+class UserData
 {
 	std::vector<User*> users_;
 
 public:
-
+	UserData() {}
+	~UserData() 
+	{
+		clearUsers();
+	}
 	void addNewUser(const std::string& username)
 	{
 		User* tmp = new User(username);
@@ -29,7 +33,7 @@ public:
 		std::cout << "Can't find user: " << username << "\n";
 	}
 
-	size_t getUsersCount() 
+	size_t getUsersCount()
 	{
 		return users_.size();
 	}
@@ -51,18 +55,30 @@ public:
 		std::cout << "Can't find user: " << username << "\n";
 		return std::nullopt;
 	}
-	 
-	void addGradeToUser(const std::string& username, char sign,GradeType type, std::map<char,float> data)
+
+	void addGradeToUser(const std::string& username,const std::string& subjectName, char sign, GradeType type, std::map<char, float> data)
 	{
 		for (auto* user : users_)
 		{
 			if (user->getName() == username)
 			{
-				user->addGradeWithPoint(sign, type, data);
+				user->addGradeWithPoint(subjectName, sign, type, data);
 				return;
 			}
 		}
 		std::cout << "Can't find user: " << username << "\n";
 		return;
+	}
+private:
+	void clearUsers()
+	{
+		if (users_.size() == 0)
+			return;
+		std::cout << "\n\nStart Cleaning users..\n";
+		for (auto user : users_)
+		{
+			delete user;
+		}
+		users_.clear();
 	}
 };
